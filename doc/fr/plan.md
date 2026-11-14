@@ -274,6 +274,22 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
   aucun dialogue ni téléchargement du navigateur ne sort de l'app, et les raccourcis de l'OS
   marchent le curseur dans la page.
 
+**Fait le 2026-11-14** (branche `design/3-window`) :
+
+| Point | Résultat |
+| --- | --- |
+| Fork | Deux correctifs du build web, fusionnés dans `kazo/base` : [#3](https://github.com/Kazo-ca/designcraft/pull/3) (Charger les styles demandait les mêmes fichiers que Fichier › Ouvrir, `.designcraft` et `.idml` seulement maintenant, ce qui permet à la fenêtre de distinguer les deux sélecteurs) et [#4](https://github.com/Kazo-ca/designcraft/pull/4) (Enregistrer une copie n'écrivait rien sur le web : la copie passe maintenant par l'écrivain de la plateforme, donc par `Exporting`). Sous-module `external/designcraft` sur le résultat, recompilé : `.wasm` de 43,3 Mo. Brouillons amont complétés dans `/mnt/project-files/design/upstream/`. |
+| Ouverture | Fichier demandé au lancement (double-clic, `xdg-open`) et Fichier › Ouvrir de DesignCraft (et « Ouvrir… » de l'écran d'accueil) par le dialogue d'ouverture de l'OS, plusieurs fichiers à la fois, dans le dossier du document au premier plan. DesignCraft entend « annulé », puis la fenêtre ouvre elle-même chaque fichier (`file.openBytes`) et le lie à son nouvel onglet. Un fichier déjà ouvert ramène son onglet (`file.activate`). |
+| Onglets liés par `uid` | `DesignDocuments` (décision 6) : le fichier de chaque onglet par l'`uid` de `document.list`, pas par son nom. Deux `Brochure.designcraft` de deux dossiers gardent chacun le leur ; Enregistrer sous lie le fichier choisi même si DesignCraft garde le nom proposé ; un onglet fermé perd son lien. Le titre de la fenêtre suit l'onglet actif (`*nom — Kazo Design` s'il est modifié). |
+| Enregistrement | Les quatre cas de F2 : nouveau document (dialogue de l'OS), document lié (réécrit sans dialogue), Enregistrer sous (dialogue, nouveau lien), document venu d'un `.idml` ou `.indd` (dialogue pour un `.designcraft` dans le dossier de l'original, qui n'est jamais réécrit, décision 8). `saved` n'est envoyé qu'une fois le fichier écrit : un dialogue annulé ou une écriture refusée laisse le document modifié et le dit dans la fenêtre. |
+| Exports | `Exporting` : toujours une copie, demandée dans le dossier du document (Enregistrer une copie, PDF, IDML, et les autres exports qui passent par l'écrivain). Le document garde son fichier et son état modifié ; un avis « Copie enregistrée ». Aucun téléchargement du navigateur. |
+| Garde de fermeture | Décision 9 : la fenêtre relit `document.list` ; s'il reste des onglets modifiés, la boîte de l'OS « Enregistrer les modifications ? » (Oui, Non, Annuler). Oui active chaque onglet modifié, lance `app.save` et attend chaque écriture (2 min au plus) ; un enregistrement annulé garde la fenêtre ouverte. |
+| Sélecteurs | `PickRequested` : Fichier › Ouvrir reconnu à sa liste d'extensions (`DesignFormats.IsOpenPicker`) ; Importer, nuanciers `.ase`, styles, raccourcis reçoivent les octets du fichier choisi dans le dialogue de l'OS, filtré sur ce que DesignCraft accepte, puis « Tous les fichiers ». |
+| Raccourcis | Décision 12 : aucun raccourci de menu de DesignCraft n'est un accord gardé par l'OS (`Alt+Tab`, `Alt+F4`, `Alt+Q`, `Alt+Espace`, `Alt+F3`, `Alt+F7` à `Alt+F11`, `Super+flèches`, `Alt+Maj+←/→`, `Super+Maj+←/→`, `Ctrl+Alt+Maj+←/→`). Proches mais distincts : `Alt+Maj+F11`, `Cmd+F11`, `Cmd+F6`, `Maj+F9`. `Ctrl+N` reste à DesignCraft. Vérifié de bout en bout : `Alt+Q` pressé le curseur dans la page ferme la fenêtre par la garde de fermeture. |
+| Thème et langue | Thème suivi en direct (`SchemeChanged` → `ui.set brightness`) ; langue posée à chaque démarrage (`app.language`, décision 10). |
+| Grand document (décision 13) | `tests/measure/large-document.mjs` : 4 images PNG de bruit non compressé, 40 Mo incorporés, document de 40,0 Mo (40 026 626 octets). Chromium sans carte graphique, WebGL 2 par SwiftShader. Placement : 3,6 à 3,8 s (deux passes). `file.serialize` seul : 1,5 s. Premier enregistrement (du bouton Enregistrer du dialogue au titre sans étoile) : 27,5 à 27,8 s ; enregistrement sur place : 28,3 s. Ouverture depuis l'OS : DesignCraft prêt en 8,5 s, document affiché en 28,1 à 28,6 s. Les ~26 s hors de DesignCraft sont le transport des octets et `KazoFile` (voir [Os#520](https://github.com/Kazo-ca/Os/issues/520), lenteur de `KazoFile` à 50 Mo) : à noter dans la fiche, rien ne se perd. |
+| Tests | `dotnet test` : 70 réussis (dont 15 sur `DesignDocuments` et la reconnaissance du sélecteur d'ouverture). E2E `tests/e2e/open-save.e2e.mjs` : 7 réussis (nouveau document, Enregistrer sous, copie et PDF, garde de fermeture Annuler / Oui + Annuler / Oui + nom, Ouvrir par le dialogue de l'OS et retour de l'onglet, IDML converti jamais réécrit, Charger les styles sans nouvel onglet, `Alt+Q`). Ces tests lancent Chromium sans WebGPU : dans le Chromium de test, un deuxième DesignCraft sur le WebGPU logiciel (SwiftShader) perd son périphérique (« Graphics connection lost ») ; deux fenêtres marchent en WebGL 2 et dans un vrai navigateur (chantier 1). |
+
 ### 3. Store (`design/4-store`)
 
 - Icône sans marque ArtCraft, fiche fr et en (« basé sur DesignCraft de l'équipe ArtCraft »,
@@ -308,6 +324,6 @@ DesignCraft, mode hébergé du build web (`craft-web-host`) ; DesignCraft, `wind
 - [x] Réponse de Benoit à Q1 : A (2026-11-14).
 - [x] F1, F2 (fork) : fusionnés dans `kazo/base` le 2026-11-14 (`9db8858`).
 - [x] Chantier 1 : solution, compilation, fenêtre qui démarre (2026-11-14, sur `kazo/base` après F2).
-- [ ] Chantier 2 : fenêtre, ouverture et enregistrement, exports.
+- [x] Chantier 2 : fenêtre, ouverture et enregistrement, exports (2026-11-14, fork #3 et #4).
 - [ ] Chantier 3 : Store.
 - [ ] F3 : polices à la demande.

@@ -272,6 +272,22 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
 - **Done when**: no case loses changes unless the user chose it, no browser dialog or download
   leaves the app, and the OS shortcuts work with the cursor in the page.
 
+**Done on 2026-11-14** (branch `design/3-window`):
+
+| Item | Result |
+| --- | --- |
+| Fork | Two web build fixes, merged into `kazo/base`: [#3](https://github.com/Kazo-ca/designcraft/pull/3) (Load Styles asked for the same files as File › Open; now only `.designcraft` and `.idml`, which lets the window tell the two pickers apart) and [#4](https://github.com/Kazo-ca/designcraft/pull/4) (Save a Copy wrote nothing on the web: the copy now goes through the platform writer, so through `Exporting`). Submodule `external/designcraft` on the result, rebuilt: 43.3 MB `.wasm`. Upstream drafts completed in `/mnt/project-files/design/upstream/`. |
+| Opening | File asked at launch (double-click, `xdg-open`) and DesignCraft's File › Open (and the start screen's "Open…") through the OS open dialog, several files at once, in the folder of the document in front. DesignCraft hears "cancelled", then the window opens each file itself (`file.openBytes`) and binds it to its new tab. A file already open brings its tab back (`file.activate`). |
+| Tabs bound by `uid` | `DesignDocuments` (decision 6): each tab's file by the `uid` of `document.list`, not by its name. Two `Brochure.designcraft` from two folders keep their own; Save As binds the chosen file even though DesignCraft keeps the suggested name; a closed tab loses its binding. The window title follows the active tab (`*name — Kazo Design` when modified). |
+| Saving | The four cases of F2: new document (OS dialog), bound document (rewritten with no dialog), Save As (dialog, new binding), document from an `.idml` or `.indd` (dialog for a `.designcraft` in the original's folder, which is never rewritten, decision 8). `saved` is sent only once the file is written: a cancelled dialog or a refused write leaves the document modified and says so in the window. |
+| Exports | `Exporting`: always a copy, asked in the document's folder (Save a Copy, PDF, IDML, and the other exports that go through the writer). The document keeps its file and its modified state; a "Copy saved" notice. No browser download. |
+| Close guard | Decision 9: the window reads `document.list` again; with modified tabs left, the OS box "Save the changes?" (Yes, No, Cancel). Yes activates each modified tab, runs `app.save` and waits for each write (2 min at most); a cancelled save keeps the window open. |
+| Pickers | `PickRequested`: File › Open recognised by its extension list (`DesignFormats.IsOpenPicker`); Place, `.ase` swatches, styles, shortcuts get the bytes of the file chosen in the OS dialog, filtered on what DesignCraft accepts, then "All files". |
+| Shortcuts | Decision 12: no DesignCraft menu shortcut is a chord the OS keeps (`Alt+Tab`, `Alt+F4`, `Alt+Q`, `Alt+Space`, `Alt+F3`, `Alt+F7` to `Alt+F11`, `Super+arrows`, `Alt+Shift+Left/Right`, `Super+Shift+Left/Right`, `Ctrl+Alt+Shift+Left/Right`). Close but distinct: `Alt+Shift+F11`, `Cmd+F11`, `Cmd+F6`, `Shift+F9`. `Ctrl+N` stays DesignCraft's. Checked end to end: `Alt+Q` pressed with the cursor in the page closes the window through the close guard. |
+| Theme and language | Theme followed live (`SchemeChanged` → `ui.set brightness`); language set at each start (`app.language`, decision 10). |
+| Large document (decision 13) | `tests/measure/large-document.mjs`: 4 PNG images of uncompressed noise, 40 MB embedded, a 40.0 MB document (40,026,626 bytes). Chromium with no graphics card, WebGL 2 through SwiftShader. Placing: 3.6 to 3.8 s (two runs). `file.serialize` alone: 1.5 s. First save (from the dialog's Save button to the title without its star): 27.5 to 27.8 s; save in place: 28.3 s. Opening from the OS: DesignCraft ready in 8.5 s, document shown in 28.1 to 28.6 s. The ~26 s outside DesignCraft are carrying the bytes and `KazoFile` (see [Os#520](https://github.com/Kazo-ca/Os/issues/520), `KazoFile` slow at 50 MB): to be written in the listing; nothing is lost. |
+| Tests | `dotnet test`: 70 passed (15 of them on `DesignDocuments` and recognising the open picker). E2E `tests/e2e/open-save.e2e.mjs`: 7 passed (new document, Save As, copy and PDF, close guard Cancel / Yes + Cancel / Yes + name, Open through the OS dialog and the tab coming back, converted IDML never rewritten, Load Styles with no new tab, `Alt+Q`). These tests start Chromium without WebGPU: in the test Chromium, a second DesignCraft on software WebGPU (SwiftShader) loses its device ("Graphics connection lost"); two windows work on WebGL 2 and in a real browser (work item 1). |
+
 ### 3. Store (`design/4-store`)
 
 - Icon without ArtCraft mark, listing in fr and en ("based on DesignCraft by the ArtCraft team",
@@ -304,6 +320,6 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 - [x] Benoit's answer to Q1: A (2026-11-14).
 - [x] F1, F2 (fork): merged into `kazo/base` on 2026-11-14 (`9db8858`).
 - [x] Work item 1: solution, build, window that starts (2026-11-14, on `kazo/base` after F2).
-- [ ] Work item 2: window, open and save, exports.
+- [x] Work item 2: window, open and save, exports (2026-11-14, fork #3 and #4).
 - [ ] Work item 3: Store.
 - [ ] F3: fonts on demand.
