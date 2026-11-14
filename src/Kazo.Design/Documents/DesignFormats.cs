@@ -14,7 +14,7 @@ namespace Kazo.Design.Documents;
 /// and the others of File › Place) get no association: they are placed, not opened.
 /// </para>
 /// <para>
-/// Work item 1 only declares the associations. Which saves are the document and which are copies
+/// Which saves are the document and which are copies
 /// (<see cref="CraftDocumentFormat.IsCopy"/>) is decided by DesignCraft itself in host mode (fork,
 /// H3: only the document's own save is a <c>save</c> message, exports stay downloads), so no format
 /// is marked as a copy here.
@@ -41,6 +41,21 @@ public static class DesignFormats
 
     /// <summary>Gets the file associations of the manifest.</summary>
     public static IReadOnlyList<FileHandler> FileHandlers => Formats.FileHandlers;
+
+    /// <summary>
+    /// Says whether DesignCraft's file picker is File › Open (or the start screen's Open…), which the
+    /// window answers itself with the OS Open dialog (work item 2): DesignCraft's web build asks for
+    /// <c>.designcraft</c>, <c>.idml</c>, <c>.indd</c> and <c>.indt</c> there. Load Styles asks for
+    /// <c>.designcraft</c> and <c>.idml</c> only (fork, branch <c>kazo/2c-styles-picker</c>), Place for
+    /// images, the Swatches panel for <c>.ase</c>: those get the chosen file's bytes.
+    /// </summary>
+    /// <param name="request">DesignCraft's file picker.</param>
+    /// <returns><see langword="true"/> for File › Open.</returns>
+    public static bool IsOpenPicker(PickRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return request.AcceptsAny([NativeExtension]) && request.AcceptsAny([".indd"]) && request.AcceptsOnly(OpenExtensions);
+    }
 
     private static CraftDocumentFormat Default(string extension, string mediaType) =>
         new(extension, mediaType, IsDefault: true, IsCopy: false);

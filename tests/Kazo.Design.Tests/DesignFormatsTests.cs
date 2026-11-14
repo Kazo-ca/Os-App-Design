@@ -1,5 +1,6 @@
 using Kazo.Design.Documents;
 using Kazo.Os.App.Abstractions;
+using Kazo.Os.AppSdk.Craft;
 
 namespace Kazo.Design.Tests;
 
@@ -42,5 +43,18 @@ public sealed class DesignFormatsTests
         });
         Assert.Equal([".designcraft", ".idml", ".indd", ".indt"], DesignFormats.OpenExtensions);
         Assert.Equal(DesignFormats.NativeExtension, DesignFormats.OpenExtensions[0]);
+    }
+
+    [Fact]
+    public void File_Open_is_told_apart_from_the_other_pickers_of_DesignCraft()
+    {
+        // DesignCraft's web build (apps/designcraft-web/src/browser_policy.rs, picker_filter): Open,
+        // Load Styles (fork kazo/2c-styles-picker), Place, the Swatches panel, a shortcut set.
+        Assert.True(DesignFormats.IsOpenPicker(new PickRequest(1, ".designcraft,.idml,.indd,.indt", false)));
+        Assert.False(DesignFormats.IsOpenPicker(new PickRequest(2, ".designcraft,.idml", false)));
+        Assert.False(DesignFormats.IsOpenPicker(new PickRequest(3, ".png,.jpg,.jpeg,.pdf,.idml,.designcraft", false)));
+        Assert.False(DesignFormats.IsOpenPicker(new PickRequest(4, ".ase", false)));
+        Assert.False(DesignFormats.IsOpenPicker(new PickRequest(5, ".json,.txt", false)));
+        Assert.False(DesignFormats.IsOpenPicker(new PickRequest(6, string.Empty, false)));
     }
 }

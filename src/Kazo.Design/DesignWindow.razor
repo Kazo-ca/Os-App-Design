@@ -21,4 +21,13 @@
             <button type="button" class="design-retry" @onclick="RetryAsync">@L["Retry"]</button>
         </div>
     }
+
+    @if (_notice is not null)
+    {
+        @* Over DesignCraft, at the bottom right: a failed write, a cancelled save, a copy written. *@
+        <div class="design-notice @(_noticeIsError ? "error" : string.Empty)" role="@(_noticeIsError ? "alert" : "status")">
+            <span class="design-notice-text">@_notice</span>
+            <button type="button" class="design-notice-close" aria-label="@L["Dismiss"]" @onclick="DismissNotice">×</button>
+        </div>
+    }
 </div>

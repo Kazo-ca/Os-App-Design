@@ -3,14 +3,14 @@
   "source": {
     "kind": "source-build",
     "repository": "https://github.com/Kazo-ca/designcraft.git",
-    "commit": "9db88589d703a97c707d37bbd95cdfc348889a01",
+    "commit": "19d3f962b59b6440d5dbaacb0ae3a54dbe4d5d5a",
     "craftFonts": "b076417b5880bd4154bd22f00695b1d28c6bea83",
     "rustc": "rustc 1.97.0 (2d8144b78 2026-07-07)",
     "trunk": "0.21.14",
     "profile": "opt-level=s, lto=fat, codegen-units=1"
   },
-  "glue": "designcraft-web-f397d9512e7bc63f.js",
-  "wasm": "designcraft-web-f397d9512e7bc63f_bg.wasm",
+  "glue": "designcraft-web-8bd0df93a5614bf.js",
+  "wasm": "designcraft-web-8bd0df93a5614bf_bg.wasm",
   "files": [
     { "path": "ASSETS.md", "size": 24871, "sha256": "4160626161488a04a3fa5cf36ba90322a23f497506590fed3068de4dab769aa7" },
     { "path": "LICENSE-APACHE", "size": 10174, "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594" },
@@ -22,8 +22,8 @@
     { "path": "OFL-NotoSansGeorgian.txt", "size": 4384, "sha256": "8c02263c5d73d40544f9ed91e30c4e947407057a3cc430d7b786189aeceff6df" },
     { "path": "OFL-SourceSans3.txt", "size": 4486, "sha256": "56af9b9c6715597e458284a474dc118a50a4150e9d547c70f7b4a33c3e6a9328" },
     { "path": "OFL-SourceSerif4.txt", "size": 4491, "sha256": "c21d7293d87b6d7ab1d0229a2f55b77f33a7613a6a4e66f6693d68d7d8d09464" },
-    { "path": "designcraft-web-f397d9512e7bc63f.js", "size": 174351, "sha256": "a2534e7e220f1690236eb6af4eae22b037f99ac44c109eeade36838495a6c5c1" },
-    { "path": "designcraft-web-f397d9512e7bc63f_bg.wasm", "size": 43290235, "sha256": "9b75dd5ff1f185eb8dbaa50291197fde94c260d3876dda32ad95b63213852c35" },
+    { "path": "designcraft-web-8bd0df93a5614bf.js", "size": 174351, "sha256": "a2534e7e220f1690236eb6af4eae22b037f99ac44c109eeade36838495a6c5c1" },
+    { "path": "designcraft-web-8bd0df93a5614bf_bg.wasm", "size": 43291102, "sha256": "071c16811ac016864e275bb678295492e9469b195a35451344a225c755c01d3c" },
     { "path": "licenses/pdf-backend/hayro-cmap/LICENSE-APACHE", "size": 10173, "sha256": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9" },
     { "path": "licenses/pdf-backend/hayro-cmap/LICENSE-MIT", "size": 1063, "sha256": "51b50e6120c344dcc146bbd6375ca1c78e079d97c8bea76e67a53d6ff0efebac" },
     { "path": "licenses/pdf-backend/hayro-cmap/LICENSE.txt", "size": 1453, "sha256": "742665db9c8e1bc72603c6d319ca3e90b83bd6d95202f0cd4ef11068a07a9c29" },
