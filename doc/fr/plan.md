@@ -217,6 +217,17 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
   `saved`, Exporter PDF télécharge toujours, la même page sans `data-host` se comporte comme
   avant, et le fil donne le commit de `kazo/base` à épingler.
 
+**Fait le 2026-11-14** (fork `Kazo-ca/designcraft`, PR [#1](https://github.com/Kazo-ca/designcraft/pull/1) et [#2](https://github.com/Kazo-ca/designcraft/pull/2), fusionnées dans `kazo/base`) :
+
+| Point | Résultat |
+| --- | --- |
+| Commit à épingler | **`kazo/base` = `9db88589d703a97c707d37bbd95cdfc348889a01`** (F1 `33bed97`, F2 `6e297b7`, sur le tag amont `33a4678`). |
+| F1 | `?control` installe `window.designcraft` (`craft-web-api`, craft-libs `6e03f65`). `ControlRequest` porte un `Dispatch` : une requête abandonnée par la page n'est pas exécutée (réponse `timeout: not run`). `ui.screenshot { data: true }` rend le PNG en base64. `document.list` donne `uid` et `path` ; `file.openBytes` prend un `path` facultatif, gardé pour un `.designcraft` seulement. |
+| F2 | Avec un hôte (`craft-web-host`) : `ready` après la création de l'app, `failed` si le graphique ou l'ouverture échoue ; `open` garde le nom ; Enregistrer remet les octets à l'hôte avec un `id`, et le document ne redevient propre qu'à `saved { id }`, à la révision remise (les modifications faites après restent non enregistrées). `saveAs: true` pour Enregistrer sous, un nouveau document et un document importé (IDML, INDD). `save_then` attend la confirmation. Les exports téléchargent comme avant. H9 : pas de marque ArtCraft, de bouton Discord, de carte communauté, de liens d'aide externes ni de recherche de mises à jour ; « À propos » dit « Based on DesignCraft by the ArtCraft team. ». Sans hôte, rien ne change. |
+| Essai navigateur | Build `trunk build --release`, Chromium sans écran, page hôte d'essai : F1 (`document.list` avec `uid`, thème clair, langue fr, capture), H1, H2, H3 (`saveAs: false`), H4 (modifié jusqu'à `saved`), H6 (`dirty` false, true, false), Enregistrer sous, `.idml` puis `Imported.designcraft`, nouveau document, Ctrl+S vers l'hôte, Exporter PDF télécharge, enregistrer puis fermer attend, aucun téléchargement de `.designcraft` en mode hébergé ; la même page sans hôte télécharge comme avant. Captures dans les fichiers du projet (`design/trials/fork-f2/`). |
+| Tests | 12 tests Rust du mode hébergé, tests F1 et `hostmode`. `cargo xtask` fmt, clippy, layers, assets, wasm : réussis (Rust 1.97.0). Tests de l'espace de travail réussis sauf 3 de `ui-egui` qui échouent de la même façon sur `kazo/base` dans cet environnement (glyphe CJK, wgpu sous kittest). |
+| CI GitHub | `gate` rouge sur les deux PR : le runner a pris Rust 1.100.0 (2026-11-09), dont clippy signale `needless_range_loop` dans `crates/engine/src/cmd/paths.rs:83`, code amont du tag que les PR ne touchent pas. `kazo/base` échoue de la même façon. À corriger en amont ou au prochain passage du fork sur une version amont. Les autres vérifications (lint, nix, SonarCloud, politique d'installation Windows) sont vertes. |
+
 ### 1. Solution et compilation (`design/2-solution`)
 
 - Solution renommée (`Kazo.Design`, `Kazo.Design.Os`, `Kazo.Design.Tests`), `[AppManifest]` de la
@@ -295,7 +306,7 @@ DesignCraft, mode hébergé du build web (`craft-web-host`) ; DesignCraft, `wind
 - [x] Étape 0 : lecture de DesignCraft 0.20.1, compilation et essai du build web.
 - [x] Plan fr et en.
 - [x] Réponse de Benoit à Q1 : A (2026-11-14).
-- [ ] F1, F2 (fork).
+- [x] F1, F2 (fork) : fusionnés dans `kazo/base` le 2026-11-14 (`9db8858`).
 - [ ] Chantier 1 : solution, compilation, fenêtre qui démarre. Fait le 2026-11-14 sauf ce qui attend F2 (`ready`, passage sur `kazo/base`).
 - [ ] Chantier 2 : fenêtre, ouverture et enregistrement, exports.
 - [ ] Chantier 3 : Store.
