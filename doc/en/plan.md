@@ -216,6 +216,17 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
   PDF still downloads, the same page without `data-host` behaves as before, and the thread gives
   the `kazo/base` commit to pin.
 
+**Done on 2026-11-14** (fork `Kazo-ca/designcraft`, PRs [#1](https://github.com/Kazo-ca/designcraft/pull/1) and [#2](https://github.com/Kazo-ca/designcraft/pull/2), merged into `kazo/base`):
+
+| Item | Result |
+| --- | --- |
+| Commit to pin | **`kazo/base` = `9db88589d703a97c707d37bbd95cdfc348889a01`** (F1 `33bed97`, F2 `6e297b7`, on the upstream tag `33a4678`). |
+| F1 | `?control` installs `window.designcraft` (`craft-web-api`, craft-libs `6e03f65`). `ControlRequest` carries a `Dispatch`: a request the page gave up on is not run (reply `timeout: not run`). `ui.screenshot { data: true }` returns the PNG as base64. `document.list` gives `uid` and `path`; `file.openBytes` takes an optional `path`, kept for a `.designcraft` only. |
+| F2 | With a host (`craft-web-host`): `ready` once the app exists, `failed` when graphics or opening fail; `open` keeps the name; Save hands the bytes to the host with an `id`, and the document is clean again only at `saved { id }`, at the revision handed over (edits made after stay unsaved). `saveAs: true` for Save As, a new document and an imported document (IDML, INDD). `save_then` waits for the confirmation. Exports download as before. H9: no ArtCraft mark, Discord button, community card, external Help links or update check; About says "Based on DesignCraft by the ArtCraft team.". Without a host, nothing changes. |
+| Browser trial | `trunk build --release` build, headless Chromium, trial host page: F1 (`document.list` with `uid`, light theme, French, screenshot), H1, H2, H3 (`saveAs: false`), H4 (dirty until `saved`), H6 (`dirty` false, true, false), Save As, `.idml` then `Imported.designcraft`, new document, Ctrl+S to the host, Export PDF downloads, save then close waits, no `.designcraft` download in host mode; the same page without a host downloads as before. Screenshots in the project files (`design/trials/fork-f2/`). |
+| Tests | 12 Rust host-mode tests, F1 and `hostmode` tests. `cargo xtask` fmt, clippy, layers, assets, wasm: pass (Rust 1.97.0). Workspace tests pass except 3 `ui-egui` tests that fail the same way on `kazo/base` in this environment (CJK glyph, wgpu under kittest). |
+| GitHub CI | `gate` red on both PRs: the runner took Rust 1.100.0 (2026-11-09), whose clippy reports `needless_range_loop` in `crates/engine/src/cmd/paths.rs:83`, upstream code from the tag that the PRs do not touch. `kazo/base` fails the same way. To fix upstream or at the fork's next move to an upstream release. The other checks (lint, nix, SonarCloud, Windows installation policy) are green. |
+
 ### 1. Solution and build (`design/2-solution`)
 
 - Renamed solution (`Kazo.Design`, `Kazo.Design.Os`, `Kazo.Design.Tests`), `[AppManifest]` of
@@ -291,7 +302,7 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 - [x] Step 0: reading DesignCraft 0.20.1, building and trying the web build.
 - [x] Plan in fr and en.
 - [x] Benoit's answer to Q1: A (2026-11-14).
-- [ ] F1, F2 (fork).
+- [x] F1, F2 (fork): merged into `kazo/base` on 2026-11-14 (`9db8858`).
 - [ ] Work item 1: solution, build, window that starts. Done on 2026-11-14 except what waits for F2 (`ready`, move to `kazo/base`).
 - [ ] Work item 2: window, open and save, exports.
 - [ ] Work item 3: Store.
