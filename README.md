@@ -1,16 +1,30 @@
 > [Version française](readme-fr.md)
 
-# Kazo.Os.App
+# Kazo Design
 
-A Kazo OS app repository, made with the `kazoos-solution` template.
+The page layout app of Kazo OS (pages and spreads, threaded text frames, paragraph and character styles, master pages, tables, PDF export), built on [DesignCraft](https://github.com/storytold/designcraft) (ArtCraft team), compiled from our fork [`Kazo-ca/designcraft`](https://github.com/Kazo-ca/designcraft). Work in progress: see the [plan](doc/en/plan.md). This repository was made with the `kazoos-solution` template; the Store listing replaces this page at the Store work item.
 
 | Folder | Content |
 | --- | --- |
-| `src/Kazo.Os.App` | The app (window app, its `[AppManifest]` class generates `manifest.json`) |
-| `src/Kazo.Os.App.Os` | A host that runs the whole Kazo OS with the base apps and this app: the project to start |
-| `tests/Kazo.Os.App.Tests` | Tests of the app |
+| `src/Kazo.Design` | The app (window app, its `[AppManifest]` class generates `manifest.json`) |
+| `src/Kazo.Design.Os` | A host that runs the whole Kazo OS with the base apps and this app: the project to start |
+| `tests/Kazo.Design.Tests` | Tests of the app (xUnit) |
+| `tests/e2e` | End-to-end runs in the Kazo OS host (Playwright): `npm run test:e2e` after `dotnet build Kazo.Design.slnx -c Debug` |
 | `external/KazoOs` | The Kazo OS repository as a git submodule, on a release tag |
+| `external/designcraft` | DesignCraft's sources (our fork `Kazo-ca/designcraft`) as a git submodule, only to compile DesignCraft (`tools/build-designcraft.sh`, workflow Build DesignCraft) |
+| `src/Kazo.Design/wwwroot/designcraft` | The DesignCraft web build and its provenance `designcraft.json`, written by `tools/build-designcraft.sh`, never edited by hand |
 | `store/` | What the Kazo OS Store shows: icon (PNG 256×256), short descriptions, descriptions, `store.json` |
+
+## Compiling DesignCraft
+
+`tools/build-designcraft.sh` compiles the commit of `external/designcraft` with Trunk 0.21.14, Rust
+stable and the `wasm32-unknown-unknown` target, with the web faces of `craft-fonts` at the revision
+DesignCraft's releases pin, optimised for size (`opt-level = "s"`, fat LTO, one codegen unit, set by
+`CARGO_PROFILE_RELEASE_*` without changing the fork), then replaces
+`src/Kazo.Design/wwwroot/designcraft/` with the result and its provenance. The **Build DesignCraft**
+workflow (Actions tab) does the same and opens a pull request with the build. To move to another
+DesignCraft commit: move the submodule to a commit of the fork, then rebuild; a test fails while
+the build and the submodule disagree.
 
 ## First steps
 
@@ -24,8 +38,8 @@ git submodule add --depth 1 https://github.com/Kazo-ca/Os.git external/KazoOs
 git -C external/KazoOs checkout v<Kazo OS version>
 ```
 
-Then open the `.sln` in Visual Studio or Rider and start `Kazo.Os.App.Os`, or run
-`dotnet run --project src/Kazo.Os.App.Os`.
+Then open `Kazo.Design.slnx` in Visual Studio or Rider and start `Kazo.Design.Os`, or run
+`dotnet run --project src/Kazo.Design.Os`.
 
 ## The Kazo OS version
 

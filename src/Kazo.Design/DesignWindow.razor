@@ -1,0 +1,24 @@
+@inherits WindowAppBase
+
+<div class="design-window" role="application" aria-label="@L["EditorLabel"]">
+    @* craft-host.js (Kazo.Os.AppSdk.Craft) puts DesignCraft's iframe in this element; it stays hidden until DesignCraft is ready. *@
+    <div class="design-frame @(_startup.State == FrameState.Running ? "running" : string.Empty)" @ref="_frameHost"></div>
+
+    @if (_startup.State == FrameState.Loading)
+    {
+        <div class="design-screen" role="status">
+            <div class="design-spinner" aria-hidden="true"></div>
+            <p class="design-screen-title">@L["Loading"]</p>
+            <p class="design-screen-hint">@L["LoadingHint"]</p>
+        </div>
+    }
+    else if (_startup.State == FrameState.Failed)
+    {
+        <div class="design-screen failed" role="alert">
+            <p class="design-screen-title">@L["FailedTitle"]</p>
+            <p class="design-screen-detail">@FailureText</p>
+            <p class="design-screen-hint">@L["FailedHint"]</p>
+            <button type="button" class="design-retry" @onclick="RetryAsync">@L["Retry"]</button>
+        </div>
+    }
+</div>
