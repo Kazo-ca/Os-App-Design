@@ -166,7 +166,7 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 | 0 | Os-App-Design, `design/1-plan` (`design/base`) | ce plan (fr et en) | — |
 | F1 | designcraft, `kazo/1-web-api` (`kazo/base`) | H7 : `window.designcraft`, `document.list` avec `uid` et `path` | plan fusionné |
 | F2 | designcraft, `kazo/2-web-host` (`kazo/base`) | H1 à H6, H8, H9 : mode hébergé | F1 (mêmes fichiers) |
-| 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifeste, compilation depuis le fork, page d'iframe, fenêtre qui démarre | plan fusionné ; « terminé » attend F2 |
+| 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifeste, compilation depuis le fork, page d'iframe, fenêtre qui démarre | plan fusionné |
 | 2 | Os-App-Design, `design/3-window` (`design/base`) | ouvrir, enregistrer, onglets, exports, garde de fermeture, sélecteur, raccourcis, thème, langue | 1 et F2 |
 | 3 | Os-App-Design, `design/4-store` (`design/base`) | fiche, README, licences, mesures, tag, catalogue, `features.md` | 2 |
 | F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), puis Os-App-Design `design/5-fonts` | polices à la demande (Q1 = A : après la sortie) | 3 |
@@ -233,7 +233,7 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 - Solution renommée (`Kazo.Design`, `Kazo.Design.Os`, `Kazo.Design.Tests`), `[AppManifest]` de la
   décision 1, capacités de Kazo Photo, associations de la décision 7.
 - Sous-module `external/KazoOs` sur `v3.3.4`, sous-module `external/designcraft` sur `kazo/base`
-  (sur `kazo/v0.20.1` tant que F2 n'est pas fusionné).
+  (sur `kazo/v0.20.1` tant que F2 n'était pas fusionné).
 - `tools/build-designcraft.sh` (Rust stable, cible `wasm32-unknown-unknown`, Trunk 0.21.14,
   `trunk build --release` dans `apps/designcraft-web`, `CRAFT_FONTS_DIR` sur `craft-fonts` à la
   révision de `release.yml` de DesignCraft pour le japonais et le géorgien), `designcraft.json`,
@@ -250,15 +250,15 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 | Point | Résultat |
 | --- | --- |
 | Solution | `Kazo.Design.slnx` : `src/Kazo.Design`, `src/Kazo.Design.Os`, `tests/Kazo.Design.Tests`. `[AppManifest]` `DesignApp` (décision 1), capacités de Kazo Photo, quatre formats par défaut (`.designcraft`, `.idml`, `.indd`, `.indt`, décision 7). |
-| Sous-modules | `external/KazoOs` sur `v3.3.4` ; `external/designcraft` sur `kazo/v0.20.1` (`33a4678`), à déplacer sur `kazo/base` quand F2 arrive, puis recompiler. |
+| Sous-modules | `external/KazoOs` sur `v3.3.4` ; `external/designcraft` d'abord sur `kazo/v0.20.1` (`33a4678`), puis sur `kazo/base` (`9db8858`, F1 et F2) le 2026-11-14, recompilé : `.wasm` de 43,3 Mo. |
 | Compilation | `tools/build-designcraft.sh` : Trunk 0.21.14, Rust 1.97.0, `craft-fonts` à `b076417` (BIZ UDPGothic et Noto Sans Georgian), profil taille par `CARGO_PROFILE_RELEASE_OPT_LEVEL=s`, `CARGO_PROFILE_RELEASE_LTO=fat`, `CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1`, sans toucher au fork. 12 min 30 à froid (4 cœurs) : 11 min de `cargo`, puis `wasm-opt -Oz`. `tools/vendor-designcraft.sh` écrit `designcraft.json` (provenance, taille et SHA-256 de chaque fichier). Workflow « Build DesignCraft » sur le modèle de Kazo Photo. |
 | Taille | `.wasm` de **43,2 Mo (41,2 Mio)**, 19,5 Mo en gzip -9, contre 62,3 Mo en `opt-level = 3` (étape 0) : sous l'avertissement de GitHub à 50 Mio. Les 4,4 Mo de plus que la mesure sans polices (38,8 Mo) sont les deux faces de `craft-fonts`. Un test refuse un `.wasm` de plus de 50 Mio. |
 | Paquet | `ca.kazo.design-0.1.0.kazoapp` : 19,6 Mo. |
 | Fluidité | Page seule, Chromium sans carte graphique (WebGL 2 par SwiftShader, 1280 × 800), magazine d'exemple, défilement et zoom à la molette : deux passes par build en alternance. Profil taille : démarrage en 0,75 à 0,84 s, temps par image médian 200 ms, p90 250 à 267 ms, p99 450 ms. Build `opt-level = 3` (66,3 Mo) sur la même page : démarrage en 0,87 à 1,03 s, médian 200 ms, p90 250 à 267 ms, p99 417 ms. **Pas de différence de fluidité mesurable** ; le rendu est le même. Ces temps mesurent le rendu logiciel de SwiftShader, pas une carte graphique. |
 | Kazo OS 3.3.4 publié | `kazopkg install` du paquet dans le site publié (`kazoos-wasm-3.3.4.zip`) : installé, deux fenêtres ouvertes ensemble. DesignCraft tourne en 6,1 s dans la première (téléchargement du `.wasm` compris), 0,8 s dans la deuxième. WebGL 2 utilisé ; WebGPU n'est pas disponible dans ce Chromium sans carte graphique, donc non vérifié. |
 | Mémoire | Processus de rendu de l'onglet (RSS) : 1 042 Mio pour Kazo OS seul, 1 491 Mio avec une fenêtre (+449), 1 499 Mio avec deux. Mesure grossière : la deuxième fenêtre réutilise le module compilé et ne touche pas encore toute sa mémoire. |
-| Fenêtre | `DesignWindow` sur `CraftFrame` et `FrameStartup` : chargement, erreur, « Réessayer », délai de 60 s, thème (`ui.set brightness`) et langue (`app.language`) à `ready`. Page d'iframe `wwwroot/host/index.html` sans script ni style en ligne. **Sans F2, DesignCraft n'envoie pas `ready`** : la fenêtre reste sur son écran de chargement, l'app tourne derrière. |
-| Tests | `dotnet test` : 54 réussis (manifeste, formats, page, provenance du build : commit du sous-module, `craft-fonts`, profil, licences). E2E (`npm run test:e2e`, Release) : 3 réussis, 1 en attente de F2 (« la fenêtre montre DesignCraft une fois prête »). |
+| Fenêtre | `DesignWindow` sur `CraftFrame` et `FrameStartup` : chargement, erreur, « Réessayer », délai de 60 s, thème (`ui.set brightness`) et langue (`app.language`) à `ready`. Page d'iframe `wwwroot/host/index.html` sans script ni style en ligne. Avec le mode hébergé de F2 (`data-host="page"`), DesignCraft envoie `ready` et la fenêtre l'affiche. |
+| Tests | `dotnet test` : 54 réussis (manifeste, formats, page, provenance du build : commit du sous-module, `craft-fonts`, profil, licences). E2E (`npm run test:e2e`, Release) : 4 réussis sur le build de `kazo/base`, dont « la fenêtre montre DesignCraft une fois prête ». |
 
 ### 2. Fenêtre (`design/3-window`)
 
@@ -307,7 +307,7 @@ DesignCraft, mode hébergé du build web (`craft-web-host`) ; DesignCraft, `wind
 - [x] Plan fr et en.
 - [x] Réponse de Benoit à Q1 : A (2026-11-14).
 - [x] F1, F2 (fork) : fusionnés dans `kazo/base` le 2026-11-14 (`9db8858`).
-- [ ] Chantier 1 : solution, compilation, fenêtre qui démarre. Fait le 2026-11-14 sauf ce qui attend F2 (`ready`, passage sur `kazo/base`).
+- [x] Chantier 1 : solution, compilation, fenêtre qui démarre (2026-11-14, sur `kazo/base` après F2).
 - [ ] Chantier 2 : fenêtre, ouverture et enregistrement, exports.
 - [ ] Chantier 3 : Store.
 - [ ] F3 : polices à la demande.

@@ -16,8 +16,8 @@ namespace Kazo.Design;
 /// </summary>
 /// <remarks>
 /// Once DesignCraft is ready the window gives it the OS theme and the user's language (decision 10).
-/// "Ready" is DesignCraft's <c>designcraft:ready</c> event, which only the host mode of our fork sends
-/// (H1, fork work item F2): a build without it stays on the loading screen until the timeout.
+/// "Ready" is DesignCraft's <c>designcraft:ready</c> event, which the host mode of our fork sends
+/// (H1, fork work item F2, branch <c>kazo/base</c>).
 /// Opening, saving, the tabs bound to their files, the close guard and the file picker come with
 /// work item 2. The launch argument <c>--webgl</c> forces DesignCraft's WebGL 2 renderer, to try it
 /// without WebGPU.
