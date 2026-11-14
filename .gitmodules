@@ -5,5 +5,5 @@
 [submodule "external/designcraft"]
 	path = external/designcraft
 	url = https://github.com/Kazo-ca/designcraft.git
-	branch = kazo/v0.20.1
+	branch = kazo/base
 	shallow = true

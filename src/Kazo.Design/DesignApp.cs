@@ -10,8 +10,8 @@ namespace Kazo.Design;
 /// <remarks>
 /// Work item 1 declares the identity, the window and its size, several windows at once, a window that
 /// stays on its screen, the capabilities of Kazo Photo and the file associations of decision 7
-/// (<see cref="DesignFormats"/>). Opening and saving those files come with work item 2, once
-/// DesignCraft has its host mode (fork, F2).
+/// (<see cref="DesignFormats"/>). Opening and saving those files come with work item 2, on
+/// DesignCraft's host mode (fork, F2).
 /// </remarks>
 [AppManifest]
 public sealed class DesignApp : AppDefinition
