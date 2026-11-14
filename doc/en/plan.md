@@ -233,6 +233,21 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
   together, the `.kazoapp` package installs in published Kazo OS 3.3.4; package size and memory
   per window noted here.
 
+**Done on 2026-11-14** (branch `design/2-solution`):
+
+| Point | Result |
+| --- | --- |
+| Solution | `Kazo.Design.slnx`: `src/Kazo.Design`, `src/Kazo.Design.Os`, `tests/Kazo.Design.Tests`. `[AppManifest]` `DesignApp` (decision 1), Kazo Photo's capabilities, four default formats (`.designcraft`, `.idml`, `.indd`, `.indt`, decision 7). |
+| Submodules | `external/KazoOs` on `v3.3.4`; `external/designcraft` on `kazo/v0.20.1` (`33a4678`), to move to `kazo/base` when F2 lands, then rebuild. |
+| Build | `tools/build-designcraft.sh`: Trunk 0.21.14, Rust 1.97.0, `craft-fonts` at `b076417` (BIZ UDPGothic and Noto Sans Georgian), size profile through `CARGO_PROFILE_RELEASE_OPT_LEVEL=s`, `CARGO_PROFILE_RELEASE_LTO=fat`, `CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1`, without changing the fork. 12.5 min cold (4 cores): 11 min of `cargo`, then `wasm-opt -Oz`. `tools/vendor-designcraft.sh` writes `designcraft.json` (provenance, size and SHA-256 of each file). "Build DesignCraft" workflow on Kazo Photo's model. |
+| Size | `.wasm` of **43.2 MB (41.2 MiB)**, 19.5 MB gzip -9, against 62.3 MB at `opt-level = 3` (step 0): under GitHub's 50 MiB warning. The 4.4 MB over the measure without fonts (38.8 MB) are the two `craft-fonts` faces. A test refuses a `.wasm` over 50 MiB. |
+| Package | `ca.kazo.design-0.1.0.kazoapp`: 19.6 MB. |
+| Smoothness | Page alone, Chromium without a GPU (WebGL 2 through SwiftShader, 1280 × 800), sample magazine, wheel scrolling and zooming: starts in 0.8 s; frame time median 217 ms, p90 300 ms, p99 517 ms. FLUID_O3_EN Rendering is the same. These times measure SwiftShader's software rendering, not a GPU. |
+| Published Kazo OS 3.3.4 | `kazopkg install` of the package in the published site (`kazoos-wasm-3.3.4.zip`): installed, two windows open together. DesignCraft runs after 6.1 s in the first (including the `.wasm` download), 0.8 s in the second. WebGL 2 used; WebGPU is not available in this GPU-less Chromium, so not checked. |
+| Memory | Tab renderer process (RSS): 1,042 MiB for Kazo OS alone, 1,491 MiB with one window (+449), 1,499 MiB with two. Rough measure: the second window reuses the compiled module and does not touch all its memory yet. |
+| Window | `DesignWindow` on `CraftFrame` and `FrameStartup`: loading, error, "Retry", 60 s timeout, theme (`ui.set brightness`) and language (`app.language`) at `ready`. Iframe page `wwwroot/host/index.html` with no inline script or style. **Without F2, DesignCraft sends no `ready`**: the window stays on its loading screen while the app runs behind it. |
+| Tests | `dotnet test`: 54 passed (manifest, formats, page, build provenance: submodule commit, `craft-fonts`, profile, licences). E2E (`npm run test:e2e`, Release): 3 passed, 1 waiting for F2 ("window shows DesignCraft once ready"). |
+
 ### 2. Window (`design/3-window`)
 
 - Opening: file asked at launch, File › Open through the OS dialog, decision 6.
@@ -277,7 +292,7 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 - [x] Plan in fr and en.
 - [x] Benoit's answer to Q1: A (2026-11-14).
 - [ ] F1, F2 (fork).
-- [ ] Work item 1: solution, build, window that starts.
+- [ ] Work item 1: solution, build, window that starts. Done on 2026-11-14 except what waits for F2 (`ready`, move to `kazo/base`).
 - [ ] Work item 2: window, open and save, exports.
 - [ ] Work item 3: Store.
 - [ ] F3: fonts on demand.

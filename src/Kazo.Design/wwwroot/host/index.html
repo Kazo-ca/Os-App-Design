@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!--
+  The page of the Kazo Design iframe (doc/en/plan.md, decision 5). DesignCraft runs here, in page host
+  mode (data-host="page", fork work item F2). craft-proxy.js, served by Kazo OS with the
+  Kazo.Os.AppSdk.Craft module (ADR 0259), reads data-craft-app and data-craft-build, starts
+  DesignCraft from ../designcraft/designcraft.json and relays its canvas events to the window through
+  the MessagePort the window hands over. The window adds "control" to the page's query: DesignCraft
+  installs window.designcraft, which the proxy uses, only then (fork work item F1).
+
+  designcraft_loading is the element of DesignCraft's own page: DesignCraft removes it once it runs,
+  and writes its start error into it. DesignCraft creates its "Graphics connection lost" panel
+  (designcraft_graphics_error) itself; in host mode it also tells the window (designcraft:failed),
+  which shows its own error screen with "Retry". No inline script or style: the module's
+  craft-page.css sizes the canvas and the loading element.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kazo Design</title>
+  <link rel="stylesheet" href="../../Kazo.Os.AppSdk.Craft/craft-page.css">
+  <script type="module" src="../../Kazo.Os.AppSdk.Craft/craft-proxy.js"></script>
+</head>
+<body>
+  <canvas id="designcraft_canvas" data-host="page"
+          data-craft-app="designcraft" data-craft-build="../designcraft/designcraft.json"></canvas>
+  <div id="designcraft_loading" data-craft-loading aria-hidden="true"></div>
+</body>
+</html>
