@@ -136,7 +136,7 @@ Les décisions 2, 6 et 7 reprennent les réponses de Benoit pour Kazo Photo (Q1 
 
 ## Questions posées à Benoit
 
-Posée dans le fil le 2026-11-14.
+Posée dans le fil le 2026-11-14. **Benoit a répondu A le 2026-11-14** : la v1 sort avec les polices du build officiel, la limite est écrite dans la fiche, et le chantier de polices à la demande (F3) vient après la sortie.
 
 **Q1. Polices des documents.** Le build web de DesignCraft n'a que quatre familles (Inter, Source
 Sans 3, Source Serif 4, JetBrains Mono) et ne lit pas les polices du système. Pour une app de mise
@@ -169,7 +169,7 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 | 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifeste, compilation depuis le fork, page d'iframe, fenêtre qui démarre | plan fusionné ; « terminé » attend F2 |
 | 2 | Os-App-Design, `design/3-window` (`design/base`) | ouvrir, enregistrer, onglets, exports, garde de fermeture, sélecteur, raccourcis, thème, langue | 1 et F2 |
 | 3 | Os-App-Design, `design/4-store` (`design/base`) | fiche, README, licences, mesures, tag, catalogue, `features.md` | 2 |
-| F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), puis Os-App-Design `design/5-fonts` | polices à la demande (selon Q1) | 3 si Q1 = A ; 2 si Q1 = B |
+| F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), puis Os-App-Design `design/5-fonts` | polices à la demande (Q1 = A : après la sortie) | 3 |
 
 **Ordre** : F1 puis F2 dans un même fil ; le chantier 1 dans un deuxième fil, en même temps ; puis
 2 ; puis 3. Kazo OS 3.3.4 est déjà publié : rien n'attend une version de l'OS.
@@ -260,7 +260,7 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 - **Terminé quand** : Kazo Design s'installe depuis le Store, ouvre un `.designcraft` par
   double-clic, l'enregistre, et exporte un PDF dans un dossier de l'utilisateur.
 
-### F3. Polices à la demande (selon Q1)
+### F3. Polices à la demande (après la sortie, Q1 = A)
 
 - Fork : chargement d'une famille à son premier usage depuis `fonts/manifest.txt` relatif à la
   page, sur le modèle de PhotoCraft ; la liste des polices montre les familles servies avant
@@ -279,7 +279,7 @@ DesignCraft, mode hébergé du build web (`craft-web-host`) ; DesignCraft, `wind
 
 - [x] Étape 0 : lecture de DesignCraft 0.20.1, compilation et essai du build web.
 - [x] Plan fr et en.
-- [ ] Réponse de Benoit à Q1.
+- [x] Réponse de Benoit à Q1 : A (2026-11-14).
 - [ ] F1, F2 (fork).
 - [ ] Chantier 1 : solution, compilation, fenêtre qui démarre.
 - [ ] Chantier 2 : fenêtre, ouverture et enregistrement, exports.

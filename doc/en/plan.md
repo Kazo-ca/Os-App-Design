@@ -136,7 +136,7 @@ also the instruction given to this plan.
 
 ## Questions asked to Benoit
 
-Asked in the thread on 2026-11-14.
+Asked in the thread on 2026-11-14. **Benoit answered A on 2026-11-14**: v1 ships with the fonts of the official build, the limit is written in the listing, and the fonts-on-demand work item (F3) comes after the release.
 
 **Q1. Document fonts.** The DesignCraft web build only has four families (Inter, Source Sans 3,
 Source Serif 4, JetBrains Mono) and does not read system fonts. For a page-layout app this is the
@@ -168,7 +168,7 @@ work item. Benoit merges `design/base` into `main`; the fork's `main` stays the 
 | 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifest, build from the fork, iframe page, window that starts | plan merged; "done" waits for F2 |
 | 2 | Os-App-Design, `design/3-window` (`design/base`) | open, save, tabs, exports, close guard, picker, shortcuts, theme, language | 1 and F2 |
 | 3 | Os-App-Design, `design/4-store` (`design/base`) | listing, README, licences, measures, tag, catalog, `features.md` | 2 |
-| F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), then Os-App-Design `design/5-fonts` | fonts on demand (per Q1) | 3 if Q1 = A; 2 if Q1 = B |
+| F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), then Os-App-Design `design/5-fonts` | fonts on demand (Q1 = A: after the release) | 3 |
 
 **Order**: F1 then F2 in one thread; work item 1 in a second thread, at the same time; then 2;
 then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
@@ -257,7 +257,7 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
 - **Done when**: Kazo Design installs from the Store, opens a `.designcraft` by double-click,
   saves it, and exports a PDF into a folder of the user.
 
-### F3. Fonts on demand (per Q1)
+### F3. Fonts on demand (after the release, Q1 = A)
 
 - Fork: load a family at its first use from `fonts/manifest.txt` relative to the page, on the
   model of PhotoCraft; the font list shows served families before they are loaded.
@@ -275,7 +275,7 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 
 - [x] Step 0: reading DesignCraft 0.20.1, building and trying the web build.
 - [x] Plan in fr and en.
-- [ ] Benoit's answer to Q1.
+- [x] Benoit's answer to Q1: A (2026-11-14).
 - [ ] F1, F2 (fork).
 - [ ] Work item 1: solution, build, window that starts.
 - [ ] Work item 2: window, open and save, exports.
