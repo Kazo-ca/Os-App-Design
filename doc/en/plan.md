@@ -165,7 +165,7 @@ work item. Benoit merges `design/base` into `main`; the fork's `main` stays the 
 | 0 | Os-App-Design, `design/1-plan` (`design/base`) | this plan (fr and en) | — |
 | F1 | designcraft, `kazo/1-web-api` (`kazo/base`) | H7: `window.designcraft`, `document.list` with `uid` and `path` | plan merged |
 | F2 | designcraft, `kazo/2-web-host` (`kazo/base`) | H1 to H6, H8, H9: host mode | F1 (same files) |
-| 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifest, build from the fork, iframe page, window that starts | plan merged; "done" waits for F2 |
+| 1 | Os-App-Design, `design/2-solution` (`design/base`) | solution, manifest, build from the fork, iframe page, window that starts | plan merged |
 | 2 | Os-App-Design, `design/3-window` (`design/base`) | open, save, tabs, exports, close guard, picker, shortcuts, theme, language | 1 and F2 |
 | 3 | Os-App-Design, `design/4-store` (`design/base`) | listing, README, licences, measures, tag, catalog, `features.md` | 2 |
 | F3 | designcraft, `kazo/3-served-fonts` (`kazo/base`), then Os-App-Design `design/5-fonts` | fonts on demand (Q1 = A: after the release) | 3 |
@@ -232,7 +232,7 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
 - Renamed solution (`Kazo.Design`, `Kazo.Design.Os`, `Kazo.Design.Tests`), `[AppManifest]` of
   decision 1, capabilities of Kazo Photo, associations of decision 7.
 - `external/KazoOs` submodule on `v3.3.4`, `external/designcraft` submodule on `kazo/base` (on
-  `kazo/v0.20.1` until F2 is merged).
+  `kazo/v0.20.1` while F2 was not merged).
 - `tools/build-designcraft.sh` (stable Rust, `wasm32-unknown-unknown` target, Trunk 0.21.14,
   `trunk build --release` in `apps/designcraft-web`, `CRAFT_FONTS_DIR` on `craft-fonts` at the
   revision of DesignCraft's `release.yml` for Japanese and Georgian), `designcraft.json`,
@@ -249,15 +249,15 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
 | Point | Result |
 | --- | --- |
 | Solution | `Kazo.Design.slnx`: `src/Kazo.Design`, `src/Kazo.Design.Os`, `tests/Kazo.Design.Tests`. `[AppManifest]` `DesignApp` (decision 1), Kazo Photo's capabilities, four default formats (`.designcraft`, `.idml`, `.indd`, `.indt`, decision 7). |
-| Submodules | `external/KazoOs` on `v3.3.4`; `external/designcraft` on `kazo/v0.20.1` (`33a4678`), to move to `kazo/base` when F2 lands, then rebuild. |
+| Submodules | `external/KazoOs` on `v3.3.4`; `external/designcraft` first on `kazo/v0.20.1` (`33a4678`), then on `kazo/base` (`9db8858`, F1 and F2) on 2026-11-14, rebuilt: 43.3 MB `.wasm`. |
 | Build | `tools/build-designcraft.sh`: Trunk 0.21.14, Rust 1.97.0, `craft-fonts` at `b076417` (BIZ UDPGothic and Noto Sans Georgian), size profile through `CARGO_PROFILE_RELEASE_OPT_LEVEL=s`, `CARGO_PROFILE_RELEASE_LTO=fat`, `CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1`, without changing the fork. 12.5 min cold (4 cores): 11 min of `cargo`, then `wasm-opt -Oz`. `tools/vendor-designcraft.sh` writes `designcraft.json` (provenance, size and SHA-256 of each file). "Build DesignCraft" workflow on Kazo Photo's model. |
 | Size | `.wasm` of **43.2 MB (41.2 MiB)**, 19.5 MB gzip -9, against 62.3 MB at `opt-level = 3` (step 0): under GitHub's 50 MiB warning. The 4.4 MB over the measure without fonts (38.8 MB) are the two `craft-fonts` faces. A test refuses a `.wasm` over 50 MiB. |
 | Package | `ca.kazo.design-0.1.0.kazoapp`: 19.6 MB. |
 | Smoothness | Page alone, Chromium without a GPU (WebGL 2 through SwiftShader, 1280 × 800), sample magazine, wheel scrolling and zooming: two alternating runs per build. Size profile: starts in 0.75 to 0.84 s, frame time median 200 ms, p90 250 to 267 ms, p99 450 ms. `opt-level = 3` build (66.3 MB) on the same page: starts in 0.87 to 1.03 s, median 200 ms, p90 250 to 267 ms, p99 417 ms. **No measurable smoothness difference**; rendering is the same. These times measure SwiftShader's software rendering, not a GPU. |
 | Published Kazo OS 3.3.4 | `kazopkg install` of the package in the published site (`kazoos-wasm-3.3.4.zip`): installed, two windows open together. DesignCraft runs after 6.1 s in the first (including the `.wasm` download), 0.8 s in the second. WebGL 2 used; WebGPU is not available in this GPU-less Chromium, so not checked. |
 | Memory | Tab renderer process (RSS): 1,042 MiB for Kazo OS alone, 1,491 MiB with one window (+449), 1,499 MiB with two. Rough measure: the second window reuses the compiled module and does not touch all its memory yet. |
-| Window | `DesignWindow` on `CraftFrame` and `FrameStartup`: loading, error, "Retry", 60 s timeout, theme (`ui.set brightness`) and language (`app.language`) at `ready`. Iframe page `wwwroot/host/index.html` with no inline script or style. **Without F2, DesignCraft sends no `ready`**: the window stays on its loading screen while the app runs behind it. |
-| Tests | `dotnet test`: 54 passed (manifest, formats, page, build provenance: submodule commit, `craft-fonts`, profile, licences). E2E (`npm run test:e2e`, Release): 3 passed, 1 waiting for F2 ("window shows DesignCraft once ready"). |
+| Window | `DesignWindow` on `CraftFrame` and `FrameStartup`: loading, error, "Retry", 60 s timeout, theme (`ui.set brightness`) and language (`app.language`) at `ready`. Iframe page `wwwroot/host/index.html` with no inline script or style. With F2's host mode (`data-host="page"`), DesignCraft sends `ready` and the window shows it. |
+| Tests | `dotnet test`: 54 passed (manifest, formats, page, build provenance: submodule commit, `craft-fonts`, profile, licences). E2E (`npm run test:e2e`, Release): 4 passed on the `kazo/base` build, including "window shows DesignCraft once ready". |
 
 ### 2. Window (`design/3-window`)
 
@@ -303,7 +303,7 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 - [x] Plan in fr and en.
 - [x] Benoit's answer to Q1: A (2026-11-14).
 - [x] F1, F2 (fork): merged into `kazo/base` on 2026-11-14 (`9db8858`).
-- [ ] Work item 1: solution, build, window that starts. Done on 2026-11-14 except what waits for F2 (`ready`, move to `kazo/base`).
+- [x] Work item 1: solution, build, window that starts (2026-11-14, on `kazo/base` after F2).
 - [ ] Work item 2: window, open and save, exports.
 - [ ] Work item 3: Store.
 - [ ] F3: fonts on demand.
