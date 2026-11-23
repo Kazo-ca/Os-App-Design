@@ -288,6 +288,18 @@ then 3. Kazo OS 3.3.4 is already published: nothing waits for an OS release.
 | Large document (decision 13) | `tests/measure/large-document.mjs`: 4 PNG images of uncompressed noise, 40 MB embedded, a 40.0 MB document (40,026,626 bytes). Chromium with no graphics card, WebGL 2 through SwiftShader. Placing: 3.6 to 3.8 s (two runs). `file.serialize` alone: 1.5 s. First save (from the dialog's Save button to the title without its star): 27.5 to 27.8 s; save in place: 28.3 s. Opening from the OS: DesignCraft ready in 8.5 s, document shown in 28.1 to 28.6 s. The ~26 s outside DesignCraft are carrying the bytes and `KazoFile` (see [Os#520](https://github.com/Kazo-ca/Os/issues/520), `KazoFile` slow at 50 MB): to be written in the listing; nothing is lost. |
 | Tests | `dotnet test`: 70 passed (15 of them on `DesignDocuments` and recognising the open picker). E2E `tests/e2e/open-save.e2e.mjs`: 7 passed (new document, Save As, copy and PDF, close guard Cancel / Yes + Cancel / Yes + name, Open through the OS dialog and the tab coming back, converted IDML never rewritten, Load Styles with no new tab, `Alt+Q`). These tests start Chromium without WebGPU: in the test Chromium, a second DesignCraft on software WebGPU (SwiftShader) loses its device ("Graphics connection lost"); two windows work on WebGL 2 and in a real browser (work item 1). |
 
+### Update to DesignCraft 0.21.1 (`design/update-designcraft-0.21.1`, 2026-11-23)
+
+Benoit's choice (1B 2A 3A): move to the latest upstream version, the official tag when one
+exists. DesignCraft published the tag `v0.21.1` (commit `7470fea`, 2026-11-23).
+
+| Point | Result |
+| --- | --- |
+| Fork | Branch `kazo/v0.21.1` on the upstream tag `v0.21.1`, and a new integration branch `kazo/base-v0.21.1` created from it, with our four patches rebased (F1, F2, #3, #4). `kazo/base` and `kazo/v0.20.1` stay as they are. Conflicts resolved: one `craft-libs` revision (`33be356`, upstream's) for `craft-web-api` and `craft-web-host`; `file.openBytes` keeps host mode's `path` and upstream's placed-file links; `file.saveACopy` (moved upstream to `save.rs`, with `embedLinks`) still returns its bytes on the web. A fifth patch: `craft-libs` `33be356` adds the `attach-pdf` message, which DesignCraft refuses and tells the page (`failed`). |
+| Submodule | `external/designcraft` on `kazo/base-v0.21.1` (`.gitmodules` follows that branch), rebuilt. |
+| New for users | Placed files are linked instead of embedded (1024 px proxy, status OK, Modified or Missing, Update, Relink, Embed; native format 5), placing several images and contact sheets, Duplicate Layer, object styles (panel, nested paragraph styles, corners), cell diagonal lines, Go to Row, Paragraph Rules, type shortcuts, scrolling document tabs, many speed-ups of image rendering and composition. Languages: the same 16. |
+| Tests | Fork: `cargo check` and `cargo test` of `designcraft-web` (15) and of the engine filtered on `file` (156), Rust 1.97.0; wasm `cargo clippy` stops on 5 warnings in upstream code (`book.rs`, `MAX_PREVIEW_PIXELS`, `package.rs`, `recovery.rs`), not in our patches. App: 48.8 MB `.wasm` (43.3 MB for 0.20.1), `dotnet test` 70 passed, E2E (`npm run test:e2e`) 11 passed. |
+
 ### 3. Store (`design/4-store`)
 
 - Icon without ArtCraft mark, listing in fr and en ("based on DesignCraft by the ArtCraft team",
@@ -321,5 +333,6 @@ host mode of the web build (`craft-web-host`); DesignCraft, `window.designcraft`
 - [x] F1, F2 (fork): merged into `kazo/base` on 2026-11-14 (`9db8858`).
 - [x] Work item 1: solution, build, window that starts (2026-11-14, on `kazo/base` after F2).
 - [x] Work item 2: window, open and save, exports (2026-11-14, fork #3 and #4).
+- [x] Update to DesignCraft 0.21.1 (2026-11-23, fork `kazo/base-v0.21.1`).
 - [ ] Work item 3: Store.
 - [ ] F3: fonts on demand.

@@ -55,7 +55,7 @@ public sealed partial class DesignCraftBuildTests
     [Fact]
     public void The_wasm_stays_under_the_Kazo_OS_file_size_limit()
     {
-        // ADR 0245 of Kazo OS: 128 MiB per file. DesignCraft 0.20.1 is about 37 MiB built for size.
+        // ADR 0245 of Kazo OS: 128 MiB per file. DesignCraft 0.21.1 is about 47 MiB built for size.
         const long maximumFileBytes = 128L * 1024 * 1024;
         FileInfo wasm = new(Path.Combine(BuildFolder, Provenance.GetProperty("wasm").GetString()!));
         Assert.InRange(wasm.Length, 1, maximumFileBytes);

@@ -2,7 +2,7 @@
 // `npm run test:e2e` after `dotnet build Kazo.Design.slnx -c Debug`. Each test opens a fresh page.
 //
 // The window shows DesignCraft once DesignCraft says "ready" (designcraft:ready), which the host
-// mode of our fork sends (fork work item F2, branch kazo/base).
+// mode of our fork sends (fork work item F2, on the fork base branch the submodule follows).
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { openApp, runInTerminal, startHost } from './host.mjs';

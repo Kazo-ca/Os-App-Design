@@ -290,6 +290,18 @@ chantier. Benoit fusionne `design/base` dans `main` ; `main` du fork reste la co
 | Grand document (décision 13) | `tests/measure/large-document.mjs` : 4 images PNG de bruit non compressé, 40 Mo incorporés, document de 40,0 Mo (40 026 626 octets). Chromium sans carte graphique, WebGL 2 par SwiftShader. Placement : 3,6 à 3,8 s (deux passes). `file.serialize` seul : 1,5 s. Premier enregistrement (du bouton Enregistrer du dialogue au titre sans étoile) : 27,5 à 27,8 s ; enregistrement sur place : 28,3 s. Ouverture depuis l'OS : DesignCraft prêt en 8,5 s, document affiché en 28,1 à 28,6 s. Les ~26 s hors de DesignCraft sont le transport des octets et `KazoFile` (voir [Os#520](https://github.com/Kazo-ca/Os/issues/520), lenteur de `KazoFile` à 50 Mo) : à noter dans la fiche, rien ne se perd. |
 | Tests | `dotnet test` : 70 réussis (dont 15 sur `DesignDocuments` et la reconnaissance du sélecteur d'ouverture). E2E `tests/e2e/open-save.e2e.mjs` : 7 réussis (nouveau document, Enregistrer sous, copie et PDF, garde de fermeture Annuler / Oui + Annuler / Oui + nom, Ouvrir par le dialogue de l'OS et retour de l'onglet, IDML converti jamais réécrit, Charger les styles sans nouvel onglet, `Alt+Q`). Ces tests lancent Chromium sans WebGPU : dans le Chromium de test, un deuxième DesignCraft sur le WebGPU logiciel (SwiftShader) perd son périphérique (« Graphics connection lost ») ; deux fenêtres marchent en WebGL 2 et dans un vrai navigateur (chantier 1). |
 
+### Mise à jour vers DesignCraft 0.21.1 (`design/update-designcraft-0.21.1`, 2026-11-23)
+
+Choix de Benoit (1B 2A 3A) : passer à la dernière version amont, l'étiquette officielle quand
+elle existe. DesignCraft a publié l'étiquette `v0.21.1` (commit `7470fea`, 2026-11-23).
+
+| Point | Résultat |
+| --- | --- |
+| Fork | Branche `kazo/v0.21.1` sur l'étiquette amont `v0.21.1`, et nouvelle branche d'intégration `kazo/base-v0.21.1` créée d'elle, avec nos quatre correctifs rebasés (F1, F2, #3, #4). `kazo/base` et `kazo/v0.20.1` restent tels quels. Conflits résolus : révision commune de `craft-libs` (`33be356`, celle de l'amont) pour `craft-web-api` et `craft-web-host` ; `file.openBytes` garde le `path` du mode hébergé et les liens de fichiers placés de l'amont ; `file.saveACopy` (déplacé en amont dans `save.rs`, avec `embedLinks`) rend toujours ses octets sur le web. Un cinquième correctif : `craft-libs` `33be356` ajoute le message `attach-pdf`, que DesignCraft refuse en le disant à la page (`failed`). |
+| Sous-module | `external/designcraft` sur `kazo/base-v0.21.1` (`.gitmodules` suit cette branche), recompilé. |
+| Nouveau côté utilisateur | Fichiers placés liés plutôt qu'incorporés (aperçu de 1024 px, état OK, Modifié ou Manquant, Mettre à jour, Relier, Incorporer ; format natif 5), placement de plusieurs images et planche contact, Dupliquer le calque, styles d'objet (panneau, styles de paragraphe imbriqués, coins), lignes diagonales de cellule, Aller à la ligne de tableau, Filets de paragraphe, raccourcis de texte, onglets de documents qui défilent, nombreuses accélérations du rendu des images et de la composition. Langues : les mêmes 16. |
+| Tests | Fork : `cargo check` et `cargo test` de `designcraft-web` (15) et du moteur filtrés sur `file` (156), Rust 1.97.0 ; `cargo clippy` wasm s'arrête sur 5 avertissements du code amont (`book.rs`, `MAX_PREVIEW_PIXELS`, `package.rs`, `recovery.rs`), pas sur nos correctifs. App : `.wasm` de 48,8 Mo (43,3 Mo en 0.20.1), `dotnet test` 70 réussis, E2E (`npm run test:e2e`) 11 réussis. |
+
 ### 3. Store (`design/4-store`)
 
 - Icône sans marque ArtCraft, fiche fr et en (« basé sur DesignCraft de l'équipe ArtCraft »,
@@ -325,5 +337,6 @@ DesignCraft, mode hébergé du build web (`craft-web-host`) ; DesignCraft, `wind
 - [x] F1, F2 (fork) : fusionnés dans `kazo/base` le 2026-11-14 (`9db8858`).
 - [x] Chantier 1 : solution, compilation, fenêtre qui démarre (2026-11-14, sur `kazo/base` après F2).
 - [x] Chantier 2 : fenêtre, ouverture et enregistrement, exports (2026-11-14, fork #3 et #4).
+- [x] Mise à jour vers DesignCraft 0.21.1 (2026-11-23, fork `kazo/base-v0.21.1`).
 - [ ] Chantier 3 : Store.
 - [ ] F3 : polices à la demande.

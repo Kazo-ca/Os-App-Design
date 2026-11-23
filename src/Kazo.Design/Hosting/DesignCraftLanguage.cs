@@ -13,7 +13,7 @@ namespace Kazo.Design.Hosting;
 /// </remarks>
 public static class DesignCraftLanguage
 {
-    /// <summary>The languages DesignCraft 0.20.1 has, besides English.</summary>
+    /// <summary>The languages DesignCraft 0.21.1 has, besides English.</summary>
     public static IReadOnlyList<string> Available { get; } =
     [
         "de", "fr", "es", "ja", "zh", "ar", "pt-br", "it", "uk", "ru", "cs", "pl", "ka", "hu", "sv",
