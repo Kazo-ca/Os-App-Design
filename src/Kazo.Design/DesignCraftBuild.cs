@@ -12,7 +12,7 @@ public static class DesignCraftBuild
     /// <c>wwwroot/designcraft/designcraft.json</c> by a test, so the window can show it without
     /// reading the file at run time.
     /// </summary>
-    public const string Version = "0.20.1";
+    public const string Version = "0.21.1";
 
     /// <summary>Folder of the build under the app's static files (<c>_content/Kazo.Design/</c>).</summary>
     public const string Folder = "designcraft";
